@@ -4,13 +4,14 @@ import { useRef, useState } from 'react';
 import axios from 'axios';
 import { validateEmail, validatePassword } from '../../helpers/inputValidation';
 import { renderAlert } from '../../helpers/bootstrapAlerts';
-import { ACCOUNT_CREATED, EMAIL_FAILED, PASSWORD_FAILED } from '../../constants/global';
+import { ACCOUNT_CREATED, ACCOUNT_CREATE_FAILED, EMAIL_FAILED, PASSWORD_FAILED } from '../../constants/global';
 import { useNavigate } from 'react-router';
 
 export const CreateAccountForm = () => {
     const [isEmailValidated, setIsEmailValidate] = useState(true);
     const [isPasswordValidated, setIsPasswordValidate] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [creatingFailed, setCreatingFailed] = useState(false);
 
     const navigate = useNavigate();
 
@@ -47,8 +48,8 @@ export const CreateAccountForm = () => {
                 navigate('/logowanie', {state: {text: ACCOUNT_CREATED, type: 'success'}})
             }
             console.log(response);
-        }).catch(error => {
-            console.log(error);
+        }).catch(() => {
+            setCreatingFailed(true);
         });
 
         setIsLoading(false);
@@ -58,6 +59,7 @@ export const CreateAccountForm = () => {
         <MainWrapper>
             { !isEmailValidated && renderAlert(EMAIL_FAILED, 'danger') }
             { !isPasswordValidated && renderAlert(PASSWORD_FAILED, 'danger') }
+            { creatingFailed && renderAlert(ACCOUNT_CREATE_FAILED, 'danger') }
             <Form className='mt-5 mb-5' onSubmit={registryHandler}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Adres email</Form.Label>
