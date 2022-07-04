@@ -2,8 +2,8 @@ import { Form, Button } from 'react-bootstrap';
 import { MainWrapper } from '../MainWrapper';
 import { useRef, useState } from 'react';
 import axios from 'axios';
-import { validateEmail, validatePassword } from '../../funcs/inputValidation';
-import { renderAlert } from '../../funcs/bootstrapAlerts';
+import { validateEmail, validatePassword } from '../../helpers/inputValidation';
+import { renderAlert } from '../../helpers/bootstrapAlerts';
 import { ACCOUNT_CREATED, EMAIL_FAILED, PASSWORD_FAILED } from '../../constants/global';
 import { useNavigate } from 'react-router';
 

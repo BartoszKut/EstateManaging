@@ -2,9 +2,9 @@ import { useRef, useState, useContext, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { MainWrapper } from '../MainWrapper';
 import axios from 'axios';
-import { validateEmail, validatePassword } from '../../funcs/inputValidation';
+import { validateEmail, validatePassword } from '../../helpers/inputValidation';
 import { LOGIN_FAILED } from '../../constants/global';
-import { renderAlert } from '../../funcs/bootstrapAlerts';
+import { renderAlert } from '../../helpers/bootstrapAlerts';
 import { useLocation, useNavigate } from 'react-router';
 import AuthContext from '../../store/auth-context';
 
@@ -12,21 +12,19 @@ export const UserLoginForm = () => {
     const [isEmailValidated, setIsEmailValidate] = useState(true);
     const [isPasswordValidated, setIsPasswordValidate] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    
-    const location = useLocation();
 
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
 
     const authCtx = useContext(AuthContext);
-
-    const userIsLoggedIn = authCtx.userIsLoggedIn;
+    
+    const location = useLocation();
 
     const navigate = useNavigate();
 
     let loginFailed;
     
-    const submitHandler = (event) => {
+    const loginFormSubmitHandler = (event) => {
         setIsLoading(true);
         event.preventDefault();
 
@@ -55,7 +53,9 @@ export const UserLoginForm = () => {
             password: enteredPassword,
             returnSecureToken: true,
         }).then(response => {
-            authCtx.login(response.data.idToken)
+            const expirationTime = new Date(new Date().getTime() + +response.data.expiresIn * 1000)
+
+            authCtx.login(response.data.idToken, expirationTime.toISOString())
         
             return navigate('/panel_klienta'); 
         })
@@ -65,16 +65,16 @@ export const UserLoginForm = () => {
         setIsLoading(false);
     }
 
-    // useEffect(() => {
-    //     if (userIsLoggedIn) {
-    //         return navigate('/panel_klienta'); 
-    //     }  
-    // },);
+    useEffect(() => {
+        if (authCtx.userIsLoggedIn) {
+            return navigate('/panel_klienta'); 
+        }  
+    },[navigate, authCtx.userIsLoggedIn]);
 
     return <MainWrapper>
         { location.state && renderAlert(location.state.text, location.state.type) }
         { (!isEmailValidated || !isPasswordValidated || loginFailed) && renderAlert(LOGIN_FAILED, 'danger') }
-        <Form className='mt-5 mb-5' onSubmit={submitHandler}>
+        <Form className='mt-5 mb-5' onSubmit={loginFormSubmitHandler}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Adres email</Form.Label>
                 <Form.Control ref={emailInputRef} type="email" placeholder="Wprowadź adres email" />

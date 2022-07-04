@@ -29,7 +29,7 @@ export const MainHeader = () => {
                         <Button className='mx-1' variant="outline-secondary">Zaloguj</Button>    
                 </Link> } 
                 { userIsLoggedIn && <Link to='/'>
-                    <Button className='mx-1' variant="outline-secondary" onClick={logoutHandler}>Zaloguj</Button>    
+                    <Button className='mx-1' variant="outline-secondary" onClick={logoutHandler}>Wyloguj</Button>    
                 </Link> }
             </Col>
         </Row>

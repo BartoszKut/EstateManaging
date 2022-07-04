@@ -8,13 +8,12 @@ export const Dashboard = () => {
     const navigate = useNavigate();
 
     const authCtx = useContext(AuthContext);
-    const userIsLoggedIn = authCtx.isLoggedIn;
 
     useEffect(() => {
-        if (!userIsLoggedIn) {
+        if (!authCtx.userIsLoggedIn) {
             return navigate('/logowanie', {state: {text: TOKEN_FAILED, type: 'danger'}}) 
         }  
-    }, [userIsLoggedIn, navigate]);
+    }, [navigate, authCtx.userIsLoggedIn]);
     
     return <MainWrapper>
         Zalogowano
